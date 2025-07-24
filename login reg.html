@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - FutureVault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styl.css">
+</head>
+<body>
+  <div class="container">
+    <div class="form-wrapper">
+      <h1>Welcome to Falcurmart</h1>
+      <p>Welcom enter your credentials to continue</p>
+
+      <form id="loginForm"> 
+        <div class="input-group">
+          <label for="email">Email Address:</label> <br>
+          <input type="email" id="email" required placeholder="example@gmail.com">
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password:</label>
+          <br>
+          <input type="password" id="password" required placeholder="Your password">
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+
+      <p style="text-align: center; margin-top: 15px;">
+        Don’t have an account? <a href="register.html">Register here</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ✅ Firebase SDK with Updated Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+    // ✅ Updated Firebase config for isacc-51805
+    const firebaseConfig = {
+      apiKey: "AIzaSyC_o6utdWsbmWheO9ZehWsudWXUVRYJymg",
+      authDomain: "isacc-51805.firebaseapp.com",
+      projectId: "isacc-51805",
+      storageBucket: "isacc-51805.firebasestorage.app",
+      messagingSenderId: "1047166166108",
+      appId: "1:1047166166108:web:cd4e54ebe73f3aad89b299",
+      measurementId: "G-JQEJPHVFMR",
+      databaseURL: "https://isacc-51805-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        alert("❌ Please fill in both fields.");
+        return;
+      }
+
+      try {
+        const snapshot = await get(ref(db, "vault_users"));
+        let loggedIn = false;
+
+        snapshot.forEach(child => {
+          const user = child.val();
+          if (user.email === email && user.password === password) {
+            loggedIn = true;
+            localStorage.setItem("loggedInEmail", email);
+            alert("✅ Login successful!");
+            window.location.href = "index.html"; // Redirect to homepage
+          }
+        });
+
+        if (!loggedIn) {
+          alert("❌ Invalid email or password.");
+        }
+
+      } catch (error) {
+        console.error("❌ Login error:", error);
+        alert("❌ Login failed. Try again.");
+      }
+    });
+  </script>
+</body>
+</html>

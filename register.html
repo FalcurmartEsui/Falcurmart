@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - FutureVault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="container">
+    <div class="form-wrapper">
+      <h2>Create Falcurmart Account</h2>
+      <p>Register to get started with FutureVault</p>
+
+      <form id="registerForm">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required placeholder="Your username">
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" required placeholder="example@gmail.com">
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required placeholder="Enter password">
+        </div>
+
+        <div class="input-group">
+          <label for="confirm_password">Confirm Password</label>
+          <input type="password" id="confirm_password" required placeholder="Re-enter password">
+        </div>
+
+        <button type="submit" class="login-btn">Register</button>
+      </form>
+
+      <p style="text-align: center; margin-top: 15px;">
+        Already have an account? <a href="login.html">Login here</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ✅ Firebase SDK with New Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+
+    // ✅ New Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC_o6utdWsbmWheO9ZehWsudWXUVRYJymg",
+      authDomain: "isacc-51805.firebaseapp.com",
+      projectId: "isacc-51805",
+      storageBucket: "isacc-51805.firebasestorage.app",
+      messagingSenderId: "1047166166108",
+      appId: "1:1047166166108:web:cd4e54ebe73f3aad89b299",
+      measurementId: "G-JQEJPHVFMR",
+      databaseURL: "https://isacc-51805-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const analytics = getAnalytics(app);
+
+    // ✅ Register Form Submission
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const confirmPassword = document.getElementById("confirm_password").value.trim();
+
+      if (!username || !email || !password || !confirmPassword) {
+        alert("❌ Please fill in all fields.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("❌ Passwords do not match.");
+        return;
+      }
+
+      try {
+        // ✅ Check if email already exists in vault_users
+        const snapshot = await get(ref(db, "vault_users"));
+        let exists = false;
+
+        snapshot.forEach(child => {
+          const user = child.val();
+          if (user.email === email) {
+            exists = true;
+          }
+        });
+
+        if (exists) {
+          alert("⚠️ Email already registered.");
+          return;
+        }
+
+        // ✅ Save new user to "vault_users"
+        const newUserRef = push(ref(db, "vault_users"));
+        await set(newUserRef, {
+          username,
+          email,
+          password,
+          registeredAt: new Date().toISOString()
+        });
+
+        alert("✅ Registration successful!");
+        localStorage.setItem("loggedInEmail", email);
+        window.location.href = "index.html";
+
+      } catch (error) {
+        console.error("❌ Error:", error);
+        alert("❌ Registration failed. Try again.");
+      }
+    });
+  </script>
+</body>
+</html>

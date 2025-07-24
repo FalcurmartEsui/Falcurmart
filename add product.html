@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Product</title>
+  <link rel="stylesheet" href="styl.css" />
+</head>
+<body>
+  <header>
+    <h1>Add New Product</h1>
+  </header>
+
+  <main>
+    <form id="productForm">
+      <input type="text" id="name" placeholder="Product Name" required /><br>
+      <input type="text" id="description" placeholder="Short Description" required /><br>
+      <input type="file" id="imageFile" accept="image/*" required /><br>
+      <input type="number" id="price" placeholder="Price (₦)" required /><br>
+      <input type="text" id="sizes" placeholder="Sizes (e.g. S, M, L, XL)" required /><br>
+      <input type="text" id="colors" placeholder="Colors (e.g. Red, Blue)" required /><br>
+      <input type="number" id="quantity" placeholder="Quantity in Stock" required /><br>
+      <textarea id="longDescription" placeholder="Full Product Description" required></textarea><br>
+      <button type="submit">Submit Product</button>
+    </form>
+  </main>
+
+  <!-- Firebase Modules -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getDatabase, ref as dbRef, push } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyC_o6utdWsbmWheO9ZehWsudWXUVRYJymg",
+      authDomain: "isacc-51805.firebaseapp.com",
+      projectId: "isacc-51805",
+      storageBucket: "isacc-51805.appspot.com",
+      messagingSenderId: "1047166166108",
+      appId: "1:1047166166108:web:cd4e54ebe73f3aad89b299",
+      measurementId: "G-JQEJPHVFMR",
+      databaseURL: "https://isacc-51805-default-rtdb.firebaseio.com/"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Form Submit
+    const form = document.getElementById("productForm");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      console.log("Form is submitting...");
+
+      const imageFile = document.getElementById("imageFile").files[0];
+
+      if (!imageFile) {
+        alert("Please select an image.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = async function () {
+        const base64Image = reader.result;
+
+        const product = {
+          name: document.getElementById("name").value,
+          description: document.getElementById("description").value,
+          image: base64Image,
+          price: document.getElementById("price").value,
+          sizes: document.getElementById("sizes").value,
+          colors: document.getElementById("colors").value,
+          quantity: document.getElementById("quantity").value,
+          longDescription: document.getElementById("longDescription").value
+        };
+
+        try {
+          await push(dbRef(db, "products"), product);
+          alert("Product added successfully!");
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error(error);
+          alert("Failed to save product: " + error.message);
+        }
+      };
+
+      reader.readAsDataURL(imageFile); // Convert to base64
+    });
+  </script>
+</body>
+</html>
