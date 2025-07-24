@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My E-commerce</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  
+  
+    <div class="center-box">
+      <a href="add product.html" class="plus-button">➕</a>
+      <p class="note">Add a new product</p>
+    </div>
+    <section id="product-list" class="product-grid"></section>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC_o6utdWsbmWheO9ZehWsudWXUVRYJymg",
+      authDomain: "isacc-51805.firebaseapp.com",
+      projectId: "isacc-51805",
+      storageBucket: "isacc-51805.firebasestorage.app",
+      messagingSenderId: "1047166166108",
+      appId: "1:1047166166108:web:cd4e54ebe73f3aad89b299",
+      measurementId: "G-JQEJPHVFMR",
+      databaseURL: "https://isacc-51805-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const productList = document.getElementById("product-list");
+
+    onValue(ref(db, "products"), (snapshot) => {
+      const products = snapshot.val();
+      productList.innerHTML = ""; // Clear existing
+
+      if (products) {
+        Object.entries(products).forEach(([id, item]) => {
+          const card = document.createElement("div");
+          card.className = "product-card";
+        card.innerHTML = `
+  <a href="product.html?id=${id}" class="card-link">
+    <img src="${item.image}" alt="${item.name}">
+    <h3>${item.name}</h3>
+    <p>${item.description}</p>
+    <p class="price">₦${item.price}</p>
+  </a>
+  <div class="card-actions">
+    <button class="heart-btn" onclick="addToFavorites('${id}')">❤️</button>
+    <button class="cart-btn" onclick="addToCart('${id}')">🛒 Add to Cart</button>
+  </div>
+`;
+          productList.appendChild(card);
+        });
+      } else {
+        productList.innerHTML = "<p>No products found.</p>";
+      }
+    });
+    
+    // Toggle sidebar
+const hamburger = document.getElementById("hamburger");
+const sidebar = document.getElementById("sidebar");
+
+hamburger.addEventListener("click", () => {
+  sidebar.style.left = sidebar.style.left === "0px" ? "-250px" : "0px";
+});
+
+// Optional logout (just clears session)
+function logout() {
+  localStorage.removeItem("loggedInEmail");
+  alert("Logged out!");
+  window.location.href = "vault_login.html";
+}
+window.addToCart = function (id) {
+  alert(`🛒 Product ${id} added to cart`);
+  // You can store in localStorage or Firebase later
+};
+
+window.addToFavorites = function (id) {
+  alert(`❤️ Product ${id} added to favorites`);
+  // Same here, can store later
+};
+  </script>
+</body>
+</html>
