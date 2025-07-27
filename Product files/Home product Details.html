@@ -446,40 +446,8 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
     <script src="../script.js"></script>
     <script src="../cart.js"></script>
-   <script>
-
-  
-var swiper = new Swiper(".coming-container3", {
-    spaceBetween: 20,
-    loop: true,
-    centeredSlides: true,
-    autoplay: {
-      delay: 2000,
-      disableOnInteraction: false,
-    },
-    breakpoints: {
-        0: {
-            slidesPerView: 2,
-        },
-        568: {
-            slidesPerView: 3,
-        },
-        768: {
-            slidesPerView: 4,
-        },
-        968: {
-            slidesPerView: 5,
-        },
-  
-    }
-  });
-  </script>
-
-    <script>
-</script>
-
-
-<script>
+ 
+  <script>
 
     const footer = document.querySelector('footer');
     const observer = new IntersectionObserver((entries) => {
@@ -514,7 +482,7 @@ var swiper = new Swiper(".coming-container3", {
         // Event listeners for mobile menu
         menuButton.addEventListener('click', toggleMobileMenu);
         menuCloseButton.addEventListener('click', toggleMobileMenu);
-        mobileOverlay.addEventListener('click',        toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
         
         // Mobile submenu functionality
         const submenuTitles = document.querySelectorAll('.mobile-menu-title[data-submenu]');
@@ -525,8 +493,8 @@ var swiper = new Swiper(".coming-container3", {
                 if (e.target.tagName === 'A') return;
                 
                 const submenuId = this.getAttribute('data-submenu');
-                const submenu = document.getElementById(`mobile-#{submenuId}-submenu`);
-                const icon = document.getElementById(`mobile-#{submenuId}-icon`);
+                const submenu = document.getElementById(`mobile-${submenuId}-submenu`);
+                const icon = document.getElementById(`mobile-${submenuId}-icon`);
                 
                 // Close all other submenus first
                 document.querySelectorAll('.mobile-submenu').forEach(sm => {
@@ -546,14 +514,44 @@ var swiper = new Swiper(".coming-container3", {
                 icon.classList.toggle('open');
             });
         });
- 
-    function img(src) {
-    const mainImage = document.querySelector('.main-image');
-    mainImage.innerHTML = `<img src="#{src}" class="sidel" id="mainPreview" alt="Product preview">`;
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    
+
+
+
+
+<script>
+
+
+
+
+// Toast notification for Add to Cart
+function showCartToast(msg) {
+  const toast = document.getElementById('cart-toast');
+  const toastMsg = document.getElementById('cart-toast-msg');
+  toastMsg.textContent = msg;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.opacity = 1; }, 10);
+  setTimeout(() => {
+    toast.style.opacity = 0;
+    setTimeout(() => { toast.style.display = 'none'; }, 400);
+  }, 2000);
 }
 
-  </script>
+// Attach event listeners to all add-to-cart buttons
+const addToCartBtns = document.querySelectorAll('.add-to-cart');
+addToCartBtns.forEach(btn => {
+  btn.addEventListener('click', function() {
+    const card = btn.closest('.product-card');
+    const name = card.querySelector('h3')?.textContent?.trim() || 'Product';
+    showCartToast(`${name} added to cart`);
+  });
+});
+</script>
 
+    <script src="../script.js"></script>
 
 
 
