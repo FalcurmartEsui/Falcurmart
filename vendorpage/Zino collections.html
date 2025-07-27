@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendor</title>
+    <title>Zino collection</title>
 </head>
 <div class="body">
 <body>
@@ -334,6 +334,7 @@ Bags shoes <br> and other accessories
   <span id="cart-toast-msg"></span>
 </div>
 
+  
   <script>
 
     const footer = document.querySelector('footer');
@@ -380,8 +381,8 @@ Bags shoes <br> and other accessories
                 if (e.target.tagName === 'A') return;
                 
                 const submenuId = this.getAttribute('data-submenu');
-                const submenu = document.getElementById(`mobile-#{submenuId}-submenu`);
-                const icon = document.getElementById(`mobile-#{submenuId}-icon`);
+                const submenu = document.getElementById(`mobile-${submenuId}-submenu`);
+                const icon = document.getElementById(`mobile-${submenuId}-icon`);
                 
                 // Close all other submenus first
                 document.querySelectorAll('.mobile-submenu').forEach(sm => {
@@ -433,7 +434,7 @@ addToCartBtns.forEach(btn => {
   btn.addEventListener('click', function() {
     const card = btn.closest('.product-card');
     const name = card.querySelector('h3')?.textContent?.trim() || 'Product';
-    showCartToast(`#{name} added to cart`);
+    showCartToast(`${name} added to cart`);
   });
 });
 </script>
